@@ -20,7 +20,7 @@ function ListingForm({ editId }: { editId?: string }) {
   const [showUni, setShowUni]       = useState(false)
   const [error, setError]           = useState('')
   const [loading, setLoading]       = useState(false)
-  const debounce = useRef<ReturnType<typeof setTimeout>>(null)
+  const debounce = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Load existing listing for edit
   useEffect(() => {

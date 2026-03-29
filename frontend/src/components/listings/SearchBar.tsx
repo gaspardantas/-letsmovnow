@@ -19,7 +19,7 @@ export default function SearchBar({ filters, onChange }: Props) {
   const [uniSuggestions, setSuggestions] = useState<University[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Debounced university autocomplete
   useEffect(() => {

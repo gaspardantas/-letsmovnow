@@ -34,7 +34,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     // Connect with user ID for routing events
     const socket = io(SOCKET_URL, {
       auth: { userId: user._id },
-      transports: ['websocket'],
+      transports: ['websocket'] as string[],
     })
 
     socket.on('connect', () => {
