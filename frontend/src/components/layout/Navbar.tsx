@@ -36,7 +36,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link to="/" style={styles.logo}>
           <span style={styles.logoIcon}>🏠</span>
-          <span style={styles.logoText}>Campus<span style={styles.logoAccent}>Nest</span></span>
+          <span style={styles.logoText}>LetsMovNow</span>
         </Link>
 
         {/* Desktop nav links */}
