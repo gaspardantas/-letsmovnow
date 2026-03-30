@@ -1,22 +1,12 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-  host:   process.env.EMAIL_HOST,
-  port:   parseInt(process.env.EMAIL_PORT),
-  secure: false, // TLS
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
+const FROM   = process.env.EMAIL_FROM || 'LetsMovNow <onboarding@resend.dev>';
 
-/**
- * Send email verification link after registration
- */
 const sendVerificationEmail = async (to, name, token) => {
   const link = `${process.env.CLIENT_URL}/verify-email/${token}`;
-  await transporter.sendMail({
-    from:    process.env.EMAIL_FROM,
+  await resend.emails.send({
+    from:    FROM,
     to,
     subject: 'Verify your LetsMovNow account',
     html: `
@@ -42,13 +32,10 @@ const sendVerificationEmail = async (to, name, token) => {
   });
 };
 
-/**
- * Send password reset email
- */
 const sendPasswordResetEmail = async (to, name, token) => {
   const link = `${process.env.CLIENT_URL}/reset-password/${token}`;
-  await transporter.sendMail({
-    from:    process.env.EMAIL_FROM,
+  await resend.emails.send({
+    from:    FROM,
     to,
     subject: 'Reset your LetsMovNow password',
     html: `
@@ -72,13 +59,10 @@ const sendPasswordResetEmail = async (to, name, token) => {
   });
 };
 
-/**
- * Notify lister that their listing has expired (gone off market)
- */
 const sendListingExpiredEmail = async (to, name, listingTitle) => {
   const link = `${process.env.CLIENT_URL}/my-listings`;
-  await transporter.sendMail({
-    from:    process.env.EMAIL_FROM,
+  await resend.emails.send({
+    from:    FROM,
     to,
     subject: `Your listing "${listingTitle}" has expired`,
     html: `
