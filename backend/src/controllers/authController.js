@@ -114,14 +114,13 @@ const login = async (req, res) => {
       return errorResponse(res, 'Invalid email or password', 401);
     }
 
-    // TODO: re-enable when email delivery is confirmed working
-    // if (!user.isEmailConfirmed) {
-    //   return errorResponse(
-    //     res,
-    //     'Please verify your email first. Check your inbox for the verification link.',
-    //     403
-    //   );
-    // }
+    if (!user.isEmailConfirmed) {
+      return errorResponse(
+        res,
+        'Please verify your email first. Check your inbox for the verification link.',
+        403
+      );
+    }
 
     const token = generateToken(user._id);
 
