@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { listingsApi, universitiesApi } from '../api'
 import type { University } from '../types'
 
-const US_STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
 
 interface AddressResult {
   display_name: string
@@ -218,11 +217,17 @@ function ListingForm({ editId }: { editId?: string }) {
             </div>
           </div>
 
-          {/* University autocomplete */}
+          {/* Step 1 — University */}
           <div className="form-group" style={{ position: 'relative' }}>
             <label className="form-label">University *</label>
-            <input className="form-input" placeholder="Start typing your university..." value={uniQuery} onChange={(e) => setUniQuery(e.target.value)} required />
-            <span className="form-hint">Selecting a university auto-fills city and state</span>
+            <input
+              className="form-input"
+              placeholder="Start typing your university..."
+              value={uniQuery}
+              onChange={(e) => { setUniQuery(e.target.value); setForm((p) => ({ ...p, university: '', city: '', state: '' })); setAddressConfirmed(false); setConfirmedCoords(null) }}
+              required
+            />
+            <span className="form-hint">Select your university first — city and state will be set automatically</span>
             {showUni && uniList.length > 0 && (
               <div style={styles.suggestions}>
                 {uniList.map((u) => (
@@ -235,53 +240,63 @@ function ListingForm({ editId }: { editId?: string }) {
             )}
           </div>
 
-          {/* Address */}
-          <div className="form-group">
-            <label className="form-label">Street Address *</label>
-            <input className="form-input" placeholder="123 College Ave" value={form.address} onChange={(e) => f('address', e.target.value)} required />
-          </div>
-
-          {/* City + State */}
-          <div style={styles.row2}>
-            <div className="form-group">
-              <label className="form-label">City *</label>
-              <input className="form-input" placeholder="Orlando" value={form.city} onChange={(e) => f('city', e.target.value)} required />
-            </div>
-            <div className="form-group">
-              <label className="form-label">State *</label>
-              <select className="form-select" value={form.state} onChange={(e) => f('state', e.target.value)} required>
-                <option value="">Select state</option>
-                {US_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
-          </div>
-
-          {/* Address verification */}
-          <div style={styles.addressVerify}>
-            {addressConfirmed ? (
-              <div style={styles.addressConfirmed}>
-                ✓ Address confirmed — this listing will appear on the map
-                <button type="button" style={styles.changeBtn} onClick={() => { setAddressConfirmed(false); setConfirmedCoords(null) }}>
-                  Change
-                </button>
+          {/* City + State — read only, set by university */}
+          {form.city && form.state && (
+            <div style={styles.row2}>
+              <div className="form-group">
+                <label className="form-label">City</label>
+                <input className="form-input" value={form.city} readOnly style={{ opacity: 0.6, cursor: 'not-allowed' }} />
               </div>
-            ) : (
-              <button type="button" style={styles.searchBtn} onClick={searchAddress} disabled={addressSearching}>
-                {addressSearching ? 'Searching...' : '🔍 Verify Address on Map'}
-              </button>
-            )}
+              <div className="form-group">
+                <label className="form-label">State</label>
+                <input className="form-input" value={form.state} readOnly style={{ opacity: 0.6, cursor: 'not-allowed' }} />
+              </div>
+            </div>
+          )}
 
-            {addressResults.length > 0 && (
-              <div style={styles.resultsBox}>
-                <p style={styles.resultsHint}>Select the correct address:</p>
-                {addressResults.map((r, i) => (
-                  <button key={i} type="button" style={styles.resultItem} onClick={() => confirmAddress(r)}>
-                    📍 {r.display_name}
+          {/* Step 2 — Address (only shown after university is selected) */}
+          {form.university && (
+            <>
+              <div className="form-group">
+                <label className="form-label">Street Address *</label>
+                <input
+                  className="form-input"
+                  placeholder="e.g. 123 College Ave"
+                  value={form.address}
+                  onChange={(e) => f('address', e.target.value)}
+                  required
+                />
+                <span className="form-hint">Enter the street number and name only — not shown publicly</span>
+              </div>
+
+              {/* Address verification */}
+              <div style={styles.addressVerify}>
+                {addressConfirmed ? (
+                  <div style={styles.addressConfirmed}>
+                    ✓ Address confirmed — this listing will appear on the map
+                    <button type="button" style={styles.changeBtn} onClick={() => { setAddressConfirmed(false); setConfirmedCoords(null); setAddressResults([]) }}>
+                      Change
+                    </button>
+                  </div>
+                ) : (
+                  <button type="button" style={styles.searchBtn} onClick={searchAddress} disabled={addressSearching || !form.address}>
+                    {addressSearching ? 'Searching...' : '🔍 Verify Address on Map'}
                   </button>
-                ))}
+                )}
+
+                {addressResults.length > 0 && (
+                  <div style={styles.resultsBox}>
+                    <p style={styles.resultsHint}>Select the correct address:</p>
+                    {addressResults.map((r, i) => (
+                      <button key={i} type="button" style={styles.resultItem} onClick={() => confirmAddress(r)}>
+                        📍 {r.display_name}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          )}
 
           {/* Description */}
           <div className="form-group">
