@@ -76,9 +76,16 @@ export default function Navbar() {
               <span style={mob.tabIconWrap}><IconSearch /></span>
               <span style={mob.tabLabel}>Explore</span>
             </Link>
-            <Link to="/listings/create" style={{ ...mob.tab, ...(isActive('/listings/create') ? mob.tabActive : {}) }}>
-              <span style={mob.tabIconWrap}><IconPlus /></span>
-              <span style={mob.tabLabel}>List</span>
+            <Link to="/favorites" style={{ ...mob.tab, ...(isActive('/favorites') ? mob.tabActive : {}) }}>
+              <span style={{ ...mob.tabIconWrap, position: 'relative' }}>
+                <IconHeart />
+                {favoriteCount > 0 && <span style={{ ...mob.tabBadge, background: '#FF6B6B' }}>{favoriteCount > 9 ? '9+' : favoriteCount}</span>}
+              </span>
+              <span style={mob.tabLabel}>Saved</span>
+            </Link>
+            <Link to="/listings/create" style={{ ...mob.tab }}>
+              <span style={mob.createBtn}><IconPlus /></span>
+              <span style={{ ...mob.tabLabel, opacity: 0 }}>+</span>
             </Link>
             <Link to="/chat" style={{ ...mob.tab, ...(isActive('/chat') ? mob.tabActive : {}) }}>
               <span style={{ ...mob.tabIconWrap, position: 'relative' }}>
@@ -86,13 +93,6 @@ export default function Navbar() {
                 {unreadCount > 0 && <span style={mob.tabBadge}>{unreadCount > 9 ? '9+' : unreadCount}</span>}
               </span>
               <span style={mob.tabLabel}>Messages</span>
-            </Link>
-            <Link to="/favorites" style={{ ...mob.tab, ...(isActive('/favorites') ? mob.tabActive : {}) }}>
-              <span style={{ ...mob.tabIconWrap, position: 'relative' }}>
-                <IconHeart />
-                {favoriteCount > 0 && <span style={{ ...mob.tabBadge, background: '#FF6B6B' }}>{favoriteCount > 9 ? '9+' : favoriteCount}</span>}
-              </span>
-              <span style={mob.tabLabel}>Saved</span>
             </Link>
             <button style={{ ...mob.tab, ...(sheetOpen ? mob.tabActive : {}) }} onClick={() => setSheetOpen(true)}>
               <span style={mob.avatarSmall}>{user!.name.charAt(0).toUpperCase()}</span>
@@ -238,7 +238,7 @@ export default function Navbar() {
 const mob: Record<string, React.CSSProperties> = {
   topBar:       { background: 'rgba(27,31,59,0.97)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.08)', position: 'sticky', top: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', height: 56 },
   logo:         { display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' },
-  logoText:     { fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 18, color: '#F0F2FF' },
+  logoText:     { fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 22, color: '#4ECDC4', letterSpacing: -0.5 },
   signIn:       { fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 13, color: '#9BA3C7', padding: '7px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', textDecoration: 'none' },
   register:     { fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: 13, color: '#1B1F3B', padding: '7px 14px', borderRadius: 10, background: '#4ECDC4', textDecoration: 'none' },
   mapBtn:       { display: 'flex', alignItems: 'center', gap: 4, color: '#4ECDC4', textDecoration: 'none', padding: '6px 10px', borderRadius: 8, border: '1px solid rgba(78,205,196,0.3)', background: 'rgba(78,205,196,0.08)' },
@@ -249,6 +249,7 @@ const mob: Record<string, React.CSSProperties> = {
   tabIconWrap:  { display: 'flex', alignItems: 'center', justifyContent: 'center' },
   tabLabel:     { fontSize: 10, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, letterSpacing: '0.02em' },
   tabBadge:     { position: 'absolute', top: -6, right: -8, minWidth: 16, height: 16, borderRadius: 8, background: '#4ECDC4', color: '#1B1F3B', fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px', fontFamily: "'Plus Jakarta Sans', sans-serif" },
+  createBtn:    { width: 44, height: 44, borderRadius: '50%', background: '#4ECDC4', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1B1F3B', boxShadow: '0 4px 12px rgba(78,205,196,0.4)', marginBottom: 2 },
   avatarSmall:  { width: 26, height: 26, borderRadius: '50%', background: 'linear-gradient(135deg, #4ECDC4, #2C3E6B)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#fff', fontFamily: "'Plus Jakarta Sans', sans-serif" },
   overlay:      { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1100, backdropFilter: 'blur(2px)' },
   sheet:        { position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1101, background: '#1E2340', borderRadius: '20px 20px 0 0', border: '1px solid rgba(255,255,255,0.1)', paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)' },
