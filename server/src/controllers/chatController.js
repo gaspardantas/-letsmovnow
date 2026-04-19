@@ -229,7 +229,10 @@ const getUnreadCount = async (req, res) => {
       sender: { $ne: req.user._id },
       readBy: { $ne: req.user._id },
       thread: {
-        $in: await Thread.find({ participants: req.user._id }).distinct('_id'),
+        $in: await Thread.find({
+          participants: req.user._id,
+          deletedBy: { $ne: req.user._id },
+        }).distinct('_id'),
       },
     });
     return successResponse(res, { unreadCount: count });
