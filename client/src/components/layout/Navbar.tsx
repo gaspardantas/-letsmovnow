@@ -70,36 +70,52 @@ export default function Navbar() {
         </nav>
 
         {/* Bottom tab bar */}
-        {isAuthenticated && (
-          <nav style={mob.tabBar}>
-            <Link to="/" style={{ ...mob.tab, ...(isActive('/') ? mob.tabActive : {}) }}>
-              <span style={mob.tabIconWrap}><IconSearch /></span>
-              <span style={mob.tabLabel}>Explore</span>
-            </Link>
-            <Link to="/favorites" style={{ ...mob.tab, ...(isActive('/favorites') ? mob.tabActive : {}) }}>
-              <span style={{ ...mob.tabIconWrap, position: 'relative' }}>
-                <IconHeart />
-                {favoriteCount > 0 && <span style={{ ...mob.tabBadge, background: '#FF6B6B' }}>{favoriteCount > 9 ? '9+' : favoriteCount}</span>}
-              </span>
-              <span style={mob.tabLabel}>Saved</span>
-            </Link>
-            <Link to="/listings/create" style={{ ...mob.tab }}>
-              <span style={mob.createBtn}><IconPlus /></span>
-              <span style={{ ...mob.tabLabel, opacity: 0 }}>+</span>
-            </Link>
-            <Link to="/chat" style={{ ...mob.tab, ...(isActive('/chat') ? mob.tabActive : {}) }}>
-              <span style={{ ...mob.tabIconWrap, position: 'relative' }}>
-                <IconChat />
-                {unreadCount > 0 && <span style={mob.tabBadge}>{unreadCount > 9 ? '9+' : unreadCount}</span>}
-              </span>
-              <span style={mob.tabLabel}>Messages</span>
-            </Link>
-            <button style={{ ...mob.tab, ...(sheetOpen ? mob.tabActive : {}) }} onClick={() => setSheetOpen(true)}>
-              <span style={mob.avatarSmall}>{user!.name.charAt(0).toUpperCase()}</span>
-              <span style={mob.tabLabel}>Profile</span>
-            </button>
-          </nav>
-        )}
+        <nav style={mob.tabBar}>
+          <Link to="/" style={{ ...mob.tab, ...(isActive('/') ? mob.tabActive : {}) }}>
+            <span style={mob.tabIconWrap}><IconSearch /></span>
+            <span style={mob.tabLabel}>Explore</span>
+          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link to="/favorites" style={{ ...mob.tab, ...(isActive('/favorites') ? mob.tabActive : {}) }}>
+                <span style={{ ...mob.tabIconWrap, position: 'relative' }}>
+                  <IconHeart />
+                  {favoriteCount > 0 && <span style={{ ...mob.tabBadge, background: '#FF6B6B' }}>{favoriteCount > 9 ? '9+' : favoriteCount}</span>}
+                </span>
+                <span style={mob.tabLabel}>Saved</span>
+              </Link>
+              <Link to="/listings/create" style={{ ...mob.tab }}>
+                <span style={mob.createBtn}><IconPlus /></span>
+                <span style={{ ...mob.tabLabel, opacity: 0 }}>+</span>
+              </Link>
+              <Link to="/chat" style={{ ...mob.tab, ...(isActive('/chat') ? mob.tabActive : {}) }}>
+                <span style={{ ...mob.tabIconWrap, position: 'relative' }}>
+                  <IconChat />
+                  {unreadCount > 0 && <span style={mob.tabBadge}>{unreadCount > 9 ? '9+' : unreadCount}</span>}
+                </span>
+                <span style={mob.tabLabel}>Messages</span>
+              </Link>
+              <button style={{ ...mob.tab, ...(sheetOpen ? mob.tabActive : {}) }} onClick={() => setSheetOpen(true)}>
+                <span style={mob.avatarSmall}>{user!.name.charAt(0).toUpperCase()}</span>
+                <span style={mob.tabLabel}>Profile</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/map" style={{ ...mob.tab, ...(isActive('/map') ? mob.tabActive : {}) }}>
+                <span style={mob.tabIconWrap}><IconMap /></span>
+                <span style={mob.tabLabel}>Map</span>
+              </Link>
+              <span style={{ flex: 1 }} />
+              <Link to="/login" style={{ ...mob.tab }}>
+                <span style={{ ...mob.tabLabel, fontSize: 13 }}>Sign In</span>
+              </Link>
+              <Link to="/register" style={{ ...mob.tab }}>
+                <span style={{ ...mob.tabLabel, fontSize: 13, color: '#4ECDC4' }}>Register</span>
+              </Link>
+            </>
+          )}
+        </nav>
 
         {/* Profile sheet */}
         {sheetOpen && (
