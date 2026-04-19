@@ -58,10 +58,6 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       }
     })
 
-    socket.on('unreadCountUpdate', () => {
-      setUnreadCount((prev) => prev + 1)
-    })
-
     socketRef.current = socket
 
     return () => {

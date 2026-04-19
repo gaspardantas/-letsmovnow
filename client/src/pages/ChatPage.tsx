@@ -63,14 +63,16 @@ export default function ChatPage() {
     }
     const res = await chatApi.getMessages(thread._id)
     setMessages(res.data.data.messages)
-    // Clear unread for this thread and update navbar badge
-    const wasUnread = thread.unreadCount || 0
+    // Clear unread for this thread locally
     setThreads((prev) => prev.map((t) => t._id === thread._id ? { ...t, unreadCount: 0 } : t))
-    if (wasUnread > 0) {
-      const newTotal = Math.max(0, totalUnread - wasUnread)
-      setTotalUnread(newTotal)
-      setUnreadCount(newTotal)
-    }
+    // Re-fetch accurate count from server (getMessages marks them read server-side)
+    chatApi.getUnreadCount()
+      .then((r) => {
+        const fresh = r.data.data.unreadCount
+        setTotalUnread(fresh)
+        setUnreadCount(fresh)
+      })
+      .catch(() => {})
   }
 
   const send = async (e: React.FormEvent) => {
